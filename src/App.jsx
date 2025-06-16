@@ -1,9 +1,11 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import Layout from './Layout';
-import { routeArray } from './config/routes';
-import KeyboardNavigationProvider from '@/components/providers/KeyboardNavigationProvider';
-import AccessibilityOverlay from '@/components/organisms/AccessibilityOverlay';
+import React from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import Layout from "./Layout";
+import { routeArray } from "./config/routes";
+import KeyboardNavigationProvider from "./components/providers/KeyboardNavigationProvider";
+import AccessibilityOverlay from "./components/organisms/AccessibilityOverlay";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   return (
@@ -11,33 +13,33 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Layout />}>
-          {routeArray.map((route) => {
-            const Component = route.component;
-            return (
-              <Route
-                key={route.id}
-                path={route.path}
-                element={<Component />}
-              />
-            );
-})}
-        </Route>
-      </Routes>
-      <AccessibilityOverlay />
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-        className="z-[9999]"
-      />
-    </BrowserRouter>
+            {routeArray.map((route) => {
+              const Component = route.component;
+              return (
+                <Route
+                  key={route.id}
+                  path={route.path}
+                  element={<Component />}
+                />
+              );
+            })}
+          </Route>
+        </Routes>
+        <AccessibilityOverlay />
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          className="z-[9999]"
+        />
+      </BrowserRouter>
     </KeyboardNavigationProvider>
   );
 }
