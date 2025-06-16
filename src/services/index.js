@@ -5,9 +5,7 @@ import timerService from './api/timerService';
 
 export {
   taskService,
-  categoryService,
+categoryService,
   settingsService,
   timerService
 };
-export { default as categoryService } from './api/categoryService.js';
-export { default as settingsService } from './api/settingsService.js';
