@@ -7,6 +7,7 @@ import Header from '@/components/organisms/Header';
 import CategorySidebar from '@/components/organisms/CategorySidebar';
 import TaskList from '@/components/organisms/TaskList';
 import QuickAddBar from '@/components/molecules/QuickAddBar';
+import ActiveTimersWidget from '@/components/molecules/ActiveTimersWidget';
 import { taskService, categoryService } from '@/services';
 import { useKeyboardNavigation } from '@/components/providers/KeyboardNavigationProvider';
 
@@ -159,6 +160,11 @@ const Dashboard = () => {
       <Header 
         completedToday={completedToday}
         totalToday={todayTasks.length}
+/>
+      
+      <ActiveTimersWidget
+        tasks={tasks}
+        onTaskUpdated={handleTaskUpdated}
       />
       
       <QuickAddBar
@@ -166,7 +172,6 @@ const Dashboard = () => {
         onTaskAdded={handleTaskAdded}
         defaultCategory={selectedCategory}
       />
-      
       <div className="flex-1 flex overflow-hidden">
         <CategorySidebar
           categories={categories}

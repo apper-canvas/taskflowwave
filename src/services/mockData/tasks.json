@@ -9,7 +9,12 @@
     "completed": false,
     "completedAt": null,
     "createdAt": "2024-12-15T08:30:00Z",
-    "updatedAt": "2024-12-15T08:30:00Z"
+    "updatedAt": "2024-12-15T08:30:00Z",
+    "isTimerActive": false,
+    "timerStartTime": null,
+    "timerLastStartTime": null,
+    "timerTotalTime": 0,
+    "timerCompletedAt": null
   },
   {
     "id": "2",
@@ -21,7 +26,12 @@
     "completed": false,
     "completedAt": null,
     "createdAt": "2024-12-15T10:15:00Z",
-    "updatedAt": "2024-12-15T10:15:00Z"
+    "updatedAt": "2024-12-15T10:15:00Z",
+    "isTimerActive": false,
+    "timerStartTime": null,
+    "timerLastStartTime": null,
+    "timerTotalTime": 0,
+    "timerCompletedAt": null
   },
   {
     "id": "3",
@@ -33,7 +43,12 @@
     "completed": false,
     "completedAt": null,
     "createdAt": "2024-12-15T14:20:00Z",
-    "updatedAt": "2024-12-15T14:20:00Z"
+    "updatedAt": "2024-12-15T14:20:00Z",
+    "isTimerActive": false,
+    "timerStartTime": null,
+    "timerLastStartTime": null,
+    "timerTotalTime": 0,
+    "timerCompletedAt": null
   },
   {
     "id": "4",
@@ -45,7 +60,12 @@
     "completed": true,
     "completedAt": "2024-12-14T19:45:00Z",
     "createdAt": "2024-12-10T16:00:00Z",
-    "updatedAt": "2024-12-14T19:45:00Z"
+    "updatedAt": "2024-12-14T19:45:00Z",
+    "isTimerActive": false,
+    "timerStartTime": null,
+    "timerLastStartTime": null,
+    "timerTotalTime": 3600,
+    "timerCompletedAt": "2024-12-14T18:45:00Z"
   },
   {
     "id": "5",
@@ -57,6 +77,11 @@
     "completed": false,
     "completedAt": null,
     "createdAt": "2024-12-14T11:30:00Z",
-    "updatedAt": "2024-12-14T11:30:00Z"
+    "updatedAt": "2024-12-14T11:30:00Z",
+    "isTimerActive": false,
+    "timerStartTime": null,
+    "timerLastStartTime": null,
+    "timerTotalTime": 0,
+    "timerCompletedAt": null
   }
 ]

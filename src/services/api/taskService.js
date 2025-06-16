@@ -16,7 +16,7 @@ const taskService = {
     return task ? { ...task } : null;
   },
 
-  async create(taskData) {
+async create(taskData) {
     await delay(300);
     const newTask = {
       id: Date.now().toString(),
@@ -28,7 +28,13 @@ const taskService = {
       completed: false,
       completedAt: null,
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
+      // Timer fields
+      isTimerActive: false,
+      timerStartTime: null,
+      timerLastStartTime: null,
+      timerTotalTime: 0,
+      timerCompletedAt: null
     };
     tasks.push(newTask);
     return { ...newTask };
