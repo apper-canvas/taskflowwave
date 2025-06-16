@@ -10,13 +10,11 @@ const taskService = {
     return [...tasks];
   },
 
-  async getById(id) {
+async getById(id) {
     await delay(150);
     const task = tasks.find(t => t.id === id);
     return task ? { ...task } : null;
-return task ? { ...task } : null;
   },
-
   async create(taskData) {
     await delay(300);
     const newTask = {
@@ -92,9 +90,10 @@ return task ? { ...task } : null;
       default:
         // Return all tasks
         break;
-    }
+}
     
     return filteredTasks;
+  }
 };
 
 // Export the taskService (both default and named for compatibility)
