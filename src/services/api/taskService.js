@@ -132,8 +132,17 @@ const taskService = {
     }
   },
 
-  async update(id, updateData) {
+async update(id, updateData) {
     try {
+      // Validate ID parameter
+      const numericId = parseInt(id);
+      if (!id || isNaN(numericId) || numericId <= 0) {
+        const errorMessage = `Invalid task ID: ${id}. ID must be a positive integer.`;
+        console.error(errorMessage);
+        toast.error(errorMessage);
+        throw new Error(errorMessage);
+      }
+
       const { ApperClient } = window.ApperSDK;
       const apperClient = new ApperClient({
         apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
@@ -141,7 +150,7 @@ const taskService = {
       });
 
       const updateRecord = {
-        Id: parseInt(id),
+        Id: numericId,
         updated_at: new Date().toISOString()
       };
 
