@@ -1,21 +1,21 @@
-import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { format } from 'date-fns';
-import { toast } from 'react-toastify';
-import { useHotkeys } from 'react-hotkeys-hook';
-import Checkbox from '@/components/atoms/Checkbox';
-import Badge from '@/components/atoms/Badge';
-import PriorityIndicator from '@/components/atoms/PriorityIndicator';
-import ApperIcon from '@/components/ApperIcon';
-import { taskService } from '@/services';
-import { useKeyboardNavigation } from '@/components/providers/KeyboardNavigationProvider';
+import React, { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { format } from "date-fns";
+import { toast } from "react-toastify";
+import { useHotkeys } from "react-hotkeys-hook";
+import Checkbox from "@/components/atoms/Checkbox";
+import Badge from "@/components/atoms/Badge";
+import PriorityIndicator from "@/components/atoms/PriorityIndicator";
+import ApperIcon from "@/components/ApperIcon";
+import { taskService } from "@/services";
+import { useKeyboardNavigation } from "@/components/providers/KeyboardNavigationProvider";
 
 const TaskItem = ({ task, category, onTaskUpdated, onTaskDeleted }) => {
   const [loading, setLoading] = useState(false);
   const [completed, setCompleted] = useState(task.completed);
   const taskRef = useRef(null);
   const { keyboardEnabled, registerFocusableElement, focusedElement } = useKeyboardNavigation();
-  const handleToggleComplete = async () => {
+const handleToggleComplete = async () => {
     setLoading(true);
     const newCompleted = !completed;
     
@@ -23,7 +23,7 @@ const TaskItem = ({ task, category, onTaskUpdated, onTaskDeleted }) => {
     setCompleted(newCompleted);
     
     try {
-      const updatedTask = await taskService.update(task.id, {
+      const updatedTask = await taskService.update(task.Id, {
         completed: newCompleted
       });
       
@@ -40,27 +40,25 @@ const TaskItem = ({ task, category, onTaskUpdated, onTaskDeleted }) => {
       setLoading(false);
     }
   };
-  
-  const handleDelete = async () => {
+const handleDelete = async () => {
     if (!window.confirm('Are you sure you want to delete this task?')) return;
     
     try {
-      await taskService.delete(task.id);
+      await taskService.delete(task.Id);
       toast.success('Task deleted');
-      onTaskDeleted?.(task.id);
+      onTaskDeleted?.(task.Id);
     } catch (error) {
       toast.error('Failed to delete task');
     }
-};
-
-  useEffect(() => {
+  };
+useEffect(() => {
     if (taskRef.current && keyboardEnabled) {
-      registerFocusableElement(taskRef.current, `task-${task.id}`);
+      registerFocusableElement(taskRef.current, `task-${task.Id}`);
     }
-  }, [keyboardEnabled, registerFocusableElement, task.id]);
+  }, [keyboardEnabled, registerFocusableElement, task.Id]);
 
-  const handleKeyDown = (e) => {
-    if (focusedElement === `task-${task.id}`) {
+const handleKeyDown = (e) => {
+    if (focusedElement === `task-${task.Id}`) {
       switch (e.key) {
         case 'Enter':
         case ' ':
@@ -82,16 +80,16 @@ const TaskItem = ({ task, category, onTaskUpdated, onTaskDeleted }) => {
       }
     }
   };
-
-  useEffect(() => {
+useEffect(() => {
     if (keyboardEnabled) {
       window.addEventListener('keydown', handleKeyDown);
       return () => window.removeEventListener('keydown', handleKeyDown);
     }
   }, [keyboardEnabled, focusedElement]);
-  
+
   const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && !completed;
-  const isFocused = focusedElement === `task-${task.id}`;
+  const isFocused = focusedElement === `task-${task.Id}`;
+
   return (
     <motion.div
       layout
@@ -107,7 +105,7 @@ const TaskItem = ({ task, category, onTaskUpdated, onTaskDeleted }) => {
       transition={{ 
         layout: { duration: 0.2 },
         hover: { duration: 0.15 }
-}}
+      }}
       ref={taskRef}
       tabIndex={keyboardEnabled ? 0 : -1}
       role="button"
