@@ -1,125 +1,138 @@
 import taskService from './taskService';
 
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
 const STORAGE_KEY = 'taskflow_timers';
 
 const timerService = {
   async getActiveTimers() {
-    await delay(200);
-    
-    // Get all tasks and filter for active timers
-    const tasks = await taskService.getAll();
-    const activeTimers = tasks.filter(task => task.isTimerActive);
-    
-    return activeTimers.map(task => ({
-      id: task.id,
-      title: task.title,
-      startTime: task.timerStartTime,
-      totalTime: task.timerTotalTime || 0,
-      isActive: task.isTimerActive
-    }));
+    try {
+      // Get all tasks and filter for active timers
+      const tasks = await taskService.getAll();
+      const activeTimers = tasks.filter(task => task.is_timer_active);
+      
+      return activeTimers.map(task => ({
+        id: task.Id,
+        title: task.title,
+        startTime: task.timer_start_time,
+        totalTime: task.timer_total_time || 0,
+        isActive: task.is_timer_active
+      }));
+    } catch (error) {
+      console.error("Error fetching active timers:", error);
+      return [];
+    }
   },
 
   async startTimer(taskId) {
-    await delay(200);
-    
-    const now = new Date().toISOString();
-    const updateData = {
-      isTimerActive: true,
-      timerStartTime: now,
-      timerLastStartTime: now
-    };
-    
-    const updatedTask = await taskService.update(taskId, updateData);
-    this._saveTimerState(taskId, { startTime: now, isActive: true });
-    
-    return updatedTask;
+    try {
+      const now = new Date().toISOString();
+      const updateData = {
+        isTimerActive: true,
+        timerStartTime: now,
+        timerLastStartTime: now
+      };
+      
+      const updatedTask = await taskService.update(taskId, updateData);
+      this._saveTimerState(taskId, { startTime: now, isActive: true });
+      
+      return updatedTask;
+    } catch (error) {
+      console.error("Error starting timer:", error);
+      throw error;
+    }
   },
 
   async pauseTimer(taskId) {
-    await delay(200);
-    
-    const task = await taskService.getById(taskId);
-    if (!task || !task.isTimerActive) {
-      throw new Error('Timer not active');
+    try {
+      const task = await taskService.getById(taskId);
+      if (!task || !task.is_timer_active) {
+        throw new Error('Timer not active');
+      }
+      
+      // Calculate elapsed time since last start
+      const startTime = new Date(task.timer_last_start_time);
+      const elapsed = Math.floor((new Date() - startTime) / 1000);
+      const newTotalTime = (task.timer_total_time || 0) + elapsed;
+      
+      const updateData = {
+        isTimerActive: false,
+        timerTotalTime: newTotalTime,
+        timerStartTime: null,
+        timerLastStartTime: null
+      };
+      
+      const updatedTask = await taskService.update(taskId, updateData);
+      this._removeTimerState(taskId);
+      
+      return updatedTask;
+    } catch (error) {
+      console.error("Error pausing timer:", error);
+      throw error;
     }
-    
-    // Calculate elapsed time since last start
-    const startTime = new Date(task.timerLastStartTime);
-    const elapsed = Math.floor((new Date() - startTime) / 1000);
-    const newTotalTime = (task.timerTotalTime || 0) + elapsed;
-    
-    const updateData = {
-      isTimerActive: false,
-      timerTotalTime: newTotalTime,
-      timerStartTime: null,
-      timerLastStartTime: null
-    };
-    
-    const updatedTask = await taskService.update(taskId, updateData);
-    this._removeTimerState(taskId);
-    
-    return updatedTask;
   },
 
   async stopTimer(taskId) {
-    await delay(200);
-    
-    const task = await taskService.getById(taskId);
-    if (!task || !task.isTimerActive) {
-      throw new Error('Timer not active');
+    try {
+      const task = await taskService.getById(taskId);
+      if (!task || !task.is_timer_active) {
+        throw new Error('Timer not active');
+      }
+      
+      // Calculate final elapsed time
+      const startTime = new Date(task.timer_last_start_time);
+      const elapsed = Math.floor((new Date() - startTime) / 1000);
+      const finalTotalTime = (task.timer_total_time || 0) + elapsed;
+      
+      const updateData = {
+        isTimerActive: false,
+        timerTotalTime: finalTotalTime,
+        timerStartTime: null,
+        timerLastStartTime: null,
+        timerCompletedAt: new Date().toISOString()
+      };
+      
+      const updatedTask = await taskService.update(taskId, updateData);
+      this._removeTimerState(taskId);
+      
+      return updatedTask;
+    } catch (error) {
+      console.error("Error stopping timer:", error);
+      throw error;
     }
-    
-    // Calculate final elapsed time
-    const startTime = new Date(task.timerLastStartTime);
-    const elapsed = Math.floor((new Date() - startTime) / 1000);
-    const finalTotalTime = (task.timerTotalTime || 0) + elapsed;
-    
-    const updateData = {
-      isTimerActive: false,
-      timerTotalTime: finalTotalTime,
-      timerStartTime: null,
-      timerLastStartTime: null,
-      timerCompletedAt: new Date().toISOString()
-    };
-    
-    const updatedTask = await taskService.update(taskId, updateData);
-    this._removeTimerState(taskId);
-    
-    return updatedTask;
   },
 
   async resumeTimer(taskId) {
-    await delay(200);
-    
-    const task = await taskService.getById(taskId);
-    if (!task) {
-      throw new Error('Task not found');
+    try {
+      const task = await taskService.getById(taskId);
+      if (!task) {
+        throw new Error('Task not found');
+      }
+      
+      const now = new Date().toISOString();
+      const updateData = {
+        isTimerActive: true,
+        timerStartTime: task.timer_start_time || now,
+        timerLastStartTime: now
+      };
+      
+      const updatedTask = await taskService.update(taskId, updateData);
+      this._saveTimerState(taskId, { startTime: now, isActive: true });
+      
+      return updatedTask;
+    } catch (error) {
+      console.error("Error resuming timer:", error);
+      throw error;
     }
-    
-    const now = new Date().toISOString();
-    const updateData = {
-      isTimerActive: true,
-      timerStartTime: task.timerStartTime || now,
-      timerLastStartTime: now
-    };
-    
-    const updatedTask = await taskService.update(taskId, updateData);
-    this._saveTimerState(taskId, { startTime: now, isActive: true });
-    
-    return updatedTask;
   },
 
   getTimerDisplay(task) {
-    if (!task.timerTotalTime && !task.isTimerActive) {
+    if (!task.timer_total_time && !task.is_timer_active) {
       return null;
     }
     
-    let totalSeconds = task.timerTotalTime || 0;
+    let totalSeconds = task.timer_total_time || 0;
     
-    if (task.isTimerActive && task.timerLastStartTime) {
-      const elapsed = Math.floor((new Date() - new Date(task.timerLastStartTime)) / 1000);
+    if (task.is_timer_active && task.timer_last_start_time) {
+      const elapsed = Math.floor((new Date() - new Date(task.timer_last_start_time)) / 1000);
       totalSeconds += elapsed;
     }
     

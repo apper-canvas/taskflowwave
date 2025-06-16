@@ -6,6 +6,6 @@ import timerService from './api/timerService';
 export {
   taskService,
 categoryService,
-  settingsService,
+settingsService,
   timerService
 };
