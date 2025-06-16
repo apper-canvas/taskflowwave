@@ -1,0 +1,62 @@
+[
+  {
+    "id": "1",
+    "title": "Review Q4 marketing reports",
+    "description": "Analyze performance metrics and prepare recommendations for the upcoming quarter",
+    "categoryId": "work",
+    "priority": "high",
+    "dueDate": "2024-12-18",
+    "completed": false,
+    "completedAt": null,
+    "createdAt": "2024-12-15T08:30:00Z",
+    "updatedAt": "2024-12-15T08:30:00Z"
+  },
+  {
+    "id": "2",
+    "title": "Schedule dentist appointment",
+    "description": "Annual cleaning and checkup",
+    "categoryId": "personal",
+    "priority": "medium",
+    "dueDate": "2024-12-20",
+    "completed": false,
+    "completedAt": null,
+    "createdAt": "2024-12-15T10:15:00Z",
+    "updatedAt": "2024-12-15T10:15:00Z"
+  },
+  {
+    "id": "3",
+    "title": "Buy groceries for dinner party",
+    "description": "Shopping list: wine, cheese, crackers, salmon, vegetables",
+    "categoryId": "home",
+    "priority": "urgent",
+    "dueDate": "2024-12-17",
+    "completed": false,
+    "completedAt": null,
+    "createdAt": "2024-12-15T14:20:00Z",
+    "updatedAt": "2024-12-15T14:20:00Z"
+  },
+  {
+    "id": "4",
+    "title": "Finish reading 'The Design of Everyday Things'",
+    "description": "Complete chapters 5-7 and write notes",
+    "categoryId": "learning",
+    "priority": "low",
+    "dueDate": null,
+    "completed": true,
+    "completedAt": "2024-12-14T19:45:00Z",
+    "createdAt": "2024-12-10T16:00:00Z",
+    "updatedAt": "2024-12-14T19:45:00Z"
+  },
+  {
+    "id": "5",
+    "title": "Update portfolio website",
+    "description": "Add new projects and refresh design",
+    "categoryId": "work",
+    "priority": "medium",
+    "dueDate": "2024-12-25",
+    "completed": false,
+    "completedAt": null,
+    "createdAt": "2024-12-14T11:30:00Z",
+    "updatedAt": "2024-12-14T11:30:00Z"
+  }
+]
