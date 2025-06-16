@@ -14,13 +14,13 @@ const taskService = {
     await delay(150);
     const task = tasks.find(t => t.id === id);
     return task ? { ...task } : null;
+return task ? { ...task } : null;
   },
 
-async create(taskData) {
+  async create(taskData) {
     await delay(300);
     const newTask = {
       id: Date.now().toString(),
-      title: taskData.title,
       description: taskData.description || "",
       categoryId: taskData.categoryId,
       priority: taskData.priority || "medium",
@@ -95,7 +95,8 @@ async create(taskData) {
     }
     
     return filteredTasks;
-  }
 };
 
+// Export the taskService (both default and named for compatibility)
+export { taskService };
 export default taskService;
