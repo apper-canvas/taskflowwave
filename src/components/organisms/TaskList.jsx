@@ -177,9 +177,9 @@ const TaskList = ({
             layout
           >
             <AnimatePresence mode="popLayout">
-              {filteredTasks.map((task, index) => (
+{filteredTasks.map((task, index) => (
                 <motion.div
-                  key={task.id}
+                  key={`${task.id}-${index}`}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95 }}
