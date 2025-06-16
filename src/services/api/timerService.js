@@ -1,4 +1,4 @@
-import { taskService } from './taskService';
+import taskService from './taskService';
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
