@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { isToday } from 'date-fns';
+import { useHotkeys } from 'react-hotkeys-hook';
 import Header from '@/components/organisms/Header';
 import CategorySidebar from '@/components/organisms/CategorySidebar';
 import TaskList from '@/components/organisms/TaskList';
 import QuickAddBar from '@/components/molecules/QuickAddBar';
 import { taskService, categoryService } from '@/services';
+import { useKeyboardNavigation } from '@/components/providers/KeyboardNavigationProvider';
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
@@ -15,7 +17,7 @@ const Dashboard = () => {
   const [error, setError] = useState(null);
   const [currentView, setCurrentView] = useState('today');
   const [selectedCategory, setSelectedCategory] = useState(null);
-  
+  const { focusElement } = useKeyboardNavigation();
   useEffect(() => {
     loadData();
   }, []);
@@ -85,14 +87,23 @@ const Dashboard = () => {
     if (view !== 'today') {
       setSelectedCategory(null);
     }
-  };
+};
+
+  // Global keyboard shortcuts
+  useHotkeys('/', (e) => {
+    e.preventDefault();
+    focusElement('search-bar');
+  });
+
+  useHotkeys('escape', () => {
+    document.activeElement?.blur();
+  });
   
   const todayTasks = tasks.filter(task => 
     isToday(new Date(task.createdAt)) || 
     (task.dueDate && isToday(new Date(task.dueDate)))
   );
   const completedToday = todayTasks.filter(task => task.completed).length;
-  
   if (loading) {
     return (
       <div className="h-screen flex flex-col overflow-hidden">

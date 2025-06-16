@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useHotkeys } from 'react-hotkeys-hook';
 import TaskItem from '@/components/molecules/TaskItem';
 import SearchBar from '@/components/molecules/SearchBar';
 import ViewToggle from '@/components/molecules/ViewToggle';
 import ApperIcon from '@/components/ApperIcon';
+import { useKeyboardNavigation } from '@/components/providers/KeyboardNavigationProvider';
 
 const TaskList = ({ 
   tasks, 
@@ -17,6 +19,7 @@ const TaskList = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredTasks, setFilteredTasks] = useState(tasks);
+  const { keyboardEnabled, focusElement, getNextFocusableElement, focusedElement } = useKeyboardNavigation();
   
   useEffect(() => {
     let filtered = [...tasks];
@@ -59,7 +62,28 @@ const TaskList = ({
     });
     
     setFilteredTasks(filtered);
-  }, [tasks, selectedCategory, searchQuery]);
+}, [tasks, selectedCategory, searchQuery]);
+
+  // Arrow key navigation for tasks
+  useHotkeys('up', (e) => {
+    if (keyboardEnabled && focusedElement?.startsWith('task-')) {
+      e.preventDefault();
+      const prevElement = getNextFocusableElement(focusedElement, 'prev');
+      if (prevElement?.startsWith('task-')) {
+        focusElement(prevElement);
+      }
+    }
+  });
+
+  useHotkeys('down', (e) => {
+    if (keyboardEnabled && focusedElement?.startsWith('task-')) {
+      e.preventDefault();
+      const nextElement = getNextFocusableElement(focusedElement, 'next');
+      if (nextElement?.startsWith('task-')) {
+        focusElement(nextElement);
+      }
+    }
+  });
   
   const completedCount = filteredTasks.filter(task => task.completed).length;
   const totalCount = filteredTasks.length;

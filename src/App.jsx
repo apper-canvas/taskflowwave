@@ -2,12 +2,15 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import Layout from './Layout';
 import { routeArray } from './config/routes';
+import KeyboardNavigationProvider from '@/components/providers/KeyboardNavigationProvider';
+import AccessibilityOverlay from '@/components/organisms/AccessibilityOverlay';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
+    <KeyboardNavigationProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Layout />}>
           {routeArray.map((route) => {
             const Component = route.component;
             return (
@@ -17,9 +20,10 @@ function App() {
                 element={<Component />}
               />
             );
-          })}
+})}
         </Route>
       </Routes>
+      <AccessibilityOverlay />
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -34,6 +38,7 @@ function App() {
         className="z-[9999]"
       />
     </BrowserRouter>
+    </KeyboardNavigationProvider>
   );
 }
 

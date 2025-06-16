@@ -1,17 +1,20 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { format } from 'date-fns';
 import { toast } from 'react-toastify';
+import { useHotkeys } from 'react-hotkeys-hook';
 import Checkbox from '@/components/atoms/Checkbox';
 import Badge from '@/components/atoms/Badge';
 import PriorityIndicator from '@/components/atoms/PriorityIndicator';
 import ApperIcon from '@/components/ApperIcon';
 import { taskService } from '@/services';
+import { useKeyboardNavigation } from '@/components/providers/KeyboardNavigationProvider';
 
 const TaskItem = ({ task, category, onTaskUpdated, onTaskDeleted }) => {
   const [loading, setLoading] = useState(false);
   const [completed, setCompleted] = useState(task.completed);
-  
+  const taskRef = useRef(null);
+  const { keyboardEnabled, registerFocusableElement, focusedElement } = useKeyboardNavigation();
   const handleToggleComplete = async () => {
     setLoading(true);
     const newCompleted = !completed;
@@ -48,10 +51,47 @@ const TaskItem = ({ task, category, onTaskUpdated, onTaskDeleted }) => {
     } catch (error) {
       toast.error('Failed to delete task');
     }
+};
+
+  useEffect(() => {
+    if (taskRef.current && keyboardEnabled) {
+      registerFocusableElement(taskRef.current, `task-${task.id}`);
+    }
+  }, [keyboardEnabled, registerFocusableElement, task.id]);
+
+  const handleKeyDown = (e) => {
+    if (focusedElement === `task-${task.id}`) {
+      switch (e.key) {
+        case 'Enter':
+        case ' ':
+          e.preventDefault();
+          handleToggleComplete();
+          break;
+        case 'Delete':
+        case 'Backspace':
+          e.preventDefault();
+          handleDelete();
+          break;
+        case 'c':
+        case 'C':
+          if (!e.ctrlKey && !e.metaKey) {
+            e.preventDefault();
+            handleToggleComplete();
+          }
+          break;
+      }
+    }
   };
+
+  useEffect(() => {
+    if (keyboardEnabled) {
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [keyboardEnabled, focusedElement]);
   
   const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && !completed;
-  
+  const isFocused = focusedElement === `task-${task.id}`;
   return (
     <motion.div
       layout
@@ -67,12 +107,18 @@ const TaskItem = ({ task, category, onTaskUpdated, onTaskDeleted }) => {
       transition={{ 
         layout: { duration: 0.2 },
         hover: { duration: 0.15 }
-      }}
+}}
+      ref={taskRef}
+      tabIndex={keyboardEnabled ? 0 : -1}
+      role="button"
+      aria-label={`Task: ${task.title}. ${completed ? 'Completed' : 'Not completed'}. Press Enter or Space to toggle completion, Delete to remove.`}
       className={`
         bg-white rounded-lg p-4 shadow-sm border border-gray-100 cursor-pointer
         hover:shadow-md transition-all duration-200 group
         ${completed ? 'opacity-70' : ''}
         ${isOverdue ? 'ring-1 ring-error/20 bg-error/5' : ''}
+        ${isFocused ? 'ring-2 ring-primary/50' : ''}
+        focus:outline-none
       `}
     >
       <div className="flex items-start space-x-3">

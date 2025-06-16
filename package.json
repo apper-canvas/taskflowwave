@@ -12,9 +12,10 @@
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "framer-motion": "^10.16.4",
+"framer-motion": "^10.16.4",
     "react-router-dom": "^6.15.0",
     "react-toastify": "^11.0.5",
+    "react-hotkeys-hook": "^4.4.1",
     "lucide-react": "^0.299.0",
     "apexcharts": "^4.7.0",
     "react-apexcharts": "^1.7.0",

@@ -1,15 +1,19 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
+import { useHotkeys } from 'react-hotkeys-hook';
 import Input from '@/components/atoms/Input';
 import Button from '@/components/atoms/Button';
 import { taskService } from '@/services';
+import { useKeyboardNavigation } from '@/components/providers/KeyboardNavigationProvider';
 
 const QuickAddBar = ({ categories, onTaskAdded, defaultCategory }) => {
   const [title, setTitle] = useState('');
   const [categoryId, setCategoryId] = useState(defaultCategory || categories[0]?.id || '');
   const [priority, setPriority] = useState('medium');
   const [loading, setLoading] = useState(false);
+  const inputRef = useRef(null);
+  const { keyboardEnabled, registerFocusableElement } = useKeyboardNavigation();
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,15 +35,37 @@ const QuickAddBar = ({ categories, onTaskAdded, defaultCategory }) => {
     } finally {
       setLoading(false);
     }
-  };
+};
+
+  useEffect(() => {
+    if (inputRef.current && keyboardEnabled) {
+      registerFocusableElement(inputRef.current, 'quick-add-input');
+    }
+  }, [keyboardEnabled, registerFocusableElement]);
   
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSubmit(e);
+    } else if (e.key === 'Escape') {
+      setTitle('');
+      inputRef.current?.blur();
     }
   };
-  
+
+  // Global shortcuts
+  useHotkeys('ctrl+enter, cmd+enter', (e) => {
+    e.preventDefault();
+    if (title.trim()) {
+      handleSubmit(e);
+    }
+  }, { enableOnFormTags: true });
+
+  useHotkeys('n', () => {
+    if (!document.activeElement || document.activeElement.tagName !== 'INPUT') {
+      inputRef.current?.focus();
+    }
+  });
   return (
     <motion.div
       initial={{ opacity: 0, y: -10 }}
@@ -47,14 +73,16 @@ const QuickAddBar = ({ categories, onTaskAdded, defaultCategory }) => {
       className="bg-white border-b border-gray-200 p-4"
     >
       <form onSubmit={handleSubmit} className="flex items-center space-x-3">
-        <div className="flex-1">
+<div className="flex-1">
           <Input
-            placeholder="What needs to be done? (Press Enter to add)"
+            ref={inputRef}
+            placeholder="What needs to be done? (Ctrl+Enter to add, N to focus, Esc to clear)"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             onKeyDown={handleKeyDown}
             icon="Plus"
             className="border-0 ring-0 focus:ring-1 focus:ring-primary/30 bg-surface"
+            aria-label="Quick add task input"
           />
         </div>
         
